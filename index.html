@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Music player</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" integrity="sha512-PgQMlq+nqFLV4ylk1gwUOgm6CtIIXkKwaIHp/PAIWHzig/lKZSEGKEysh0TCVbHJXCLN7WetD8TFecIky75ZfQ==" crossorigin="anonymous" />
+
+  </head>
+  <body>
+
+<div class="backdrop">
+  <div class="centre_main">
+    <div class="container">
+<h1>Music Player</h1>
+<h2 id="name">shape of you</h2>
+<h3 id="artist">Ed Sheeran</h3>
+      <div class="upper">
+  <img src="images/shape of you.jpg" alt="song1">
+       </div>
+<div class="lower">
+<div class="Progress">
+</div>
+<audio src="music/shape of you.mp3"></audio>
+<!---progress bar--->
+
+<div class="progress_container">
+   <div class="progress_duration">
+        <div class="current_time" id="currenttime">00:00</div>
+        <div class="song_duration" id="duration" >00:00</div>
+   </div>
+
+   <div class="progress_div">
+     <div class="progress" id="progress"> </div>
+  </div>
+</div>
+
+<!---progress bar end--->
+
+<!---controls--->
+<div class="control_main">
+<i class="fas fa-backward" id="prev" title="previous"></i>
+<i class="fas fa-play" id="play" title="play"></i>
+<i class="fas fa-forward" id="forward" title="forward"></i>
+ </div>
+<!---controls end--->
+
+</div>
+</div>
+</div>
+</div>
+
+
+<script>
+
+//data
+
+const songs= [
+  {
+    name: "shape of you",
+    singer: "Ed Sheeran",
+  },
+
+  {
+    name: "Gulabi Aankhen",
+    singer: "sanam puri",
+  },
+
+  {
+    name: "Chhod Diya",
+    singer: "arijit singh",
+  },
+  {
+    name : "Boht Hard",
+    singer: "Emiway Bantai",
+  }
+];
+
+//buttons for operations
+const play = document.getElementById('play');
+const prev = document.getElementById('prev');
+const forward = document.getElementById('forward');
+const music = document.querySelector("audio");
+const img =  document.querySelector("img");
+//to change songs
+const name = document.getElementById('name');
+const artist = document.getElementById('artist');
+//progress bar
+let prog = document.getElementById('progress');
+let TcurrentTime = document.getElementById('currenttime');
+let Tduration  = document.getElementById('duration');
+
+let isPlay = false;
+//to start
+const playMusic = ()=>{
+     isPlay = true;
+  music.play();
+  play.classList.replace("fa-play","fa-pause");
+  img.classList.add("animation");
+};
+//to stop
+const pauseMusic = ()=>{
+  isPlay = false;
+  music.pause();
+  play.classList.replace("fa-pause","fa-play");
+  img.classList.remove("animation");
+};
+//onclick event
+play.addEventListener("click", ()=>{
+isPlay ? pauseMusic() : playMusic();
+});
+//next song buttons
+const loadSong = (songs) => {
+  name.innerText = songs.name;
+  artist.innerText = songs.singer;
+  music.src = "music/" + songs.name +".mp3" ;
+  img.src = "images/" + songs.name + ".jpg" ;
+}
+
+index = 0;
+const nextSong = () =>{
+  index = (index + 1 ) % songs.length;
+  loadSong(songs[index]);
+playMusic();
+}
+//privious song
+const prevSong = () =>{
+index = (index - 1 + songs.length) % songs.length;
+loadSong(songs[index]);
+playMusic();
+}
+//progress bar------------------------------------------
+//-----------------------------------------------------
+//-----------------------------------------------------
+music.addEventListener("timeupdate",(event)=>{
+const {currentTime,duration} = event.srcElement;
+console.log(event);
+let progress_time=(currentTime/duration) * 100;
+prog.style.width = `${progress_time}%`;
+//tp display total duration of songs---------------------
+let min_duration = Math.floor(duration/60);
+let sec_duration = Math.floor(duration%60);
+let total_duration = `${min_duration}:${sec_duration}`;
+if (duration) {
+  Tduration.textContent = `${total_duration}`;
+}
+//to display current time ------------------------------
+let min_currentTime = Math.floor(currentTime/60);
+let sec_currentTime = Math.floor(currentTime%60);
+ if (sec_currentTime < 10) {
+  sec_currentTime = `0${sec_currentTime}`;
+}
+let total_currentTime = `${min_currentTime}:${sec_currentTime}`;
+
+TcurrentTime.textContent = `${total_currentTime}`;
+
+});
+
+music.addEventListener("ended",nextSong);
+forward.addEventListener("click",nextSong);
+prev.addEventListener("click",prevSong);
+
+</script>
+</body>
+</html>
